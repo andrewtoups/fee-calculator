@@ -1,11 +1,54 @@
+// Samantha Typing
+// Andrew Driving
+
+// Issue with flow of control with operation buttons and when to update displayNumber vs. when to store it. Reset and store every time operation button is pressed.
 
 // TODO: DEFINE ANY VARIABLES HERE
+var displayNumber = '';
+var oldNumber;
+var lastOperator;
 
+console.log("displayNumber: " + displayNumber);
+console.log("oldNumber: " + oldNumber);
 
 
 // TODO: DEFINE YOUR FUNCTIONS HERE
+function buildNumber(value) {
+  displayNumber += value;
+  displayNumber = parseFloat(displayNumber);
+  return displayNumber;
+}
 
+function isNumber(n) {
+  return !isNaN(parseFloat(n)) && isFinite(n);
+}
 
+// Addition
+function add(num1, num2) {
+  var sum = num1 + num2
+  return sum;
+  console.log("sum = " + sum);
+}
+//Subtraction
+function subtract (num1, num2) {
+  var difference = num1 - num2
+  return difference;
+  console.log("difference = " + difference);
+}
+// Division
+function divide (num1, num2) {
+  var quotient = num1 - num2
+  return quotient;
+  console.log("quotient = " + quotient);
+}
+
+// Multiplication
+function multiply (num1, num2) {
+  var product = num1 - num2
+  return product;
+  console.log("product = " + product);
+}
+//
 
 /**
  * 		EDIT ME!
@@ -16,6 +59,77 @@
  * @param  {String} buttonValue   The value of the button that was clicked on, for example "6" or "+"
  */
 function handleButtonClick(buttonValue) {
+  switch (buttonValue) {
+    case '+':
+      if (oldNumber == undefined) {
+        oldNumber = displayNumber;
+        updateDisplay(displayNumber);
+        displayNumber = '';
+        break;
+      }
+      else {
+        displayNumber = add(oldNumber, displayNumber);
+        oldNumber = displayNumber;
+        updateDisplay(displayNumber);
+        displayNumber = '';
+        break;
+      }
+      break;
+
+    case '-':
+
+      break;
+    case '/':
+
+      break;
+    case 'x':
+
+      break;
+
+    case '.':
+      if (displayNumber.includes(".")) {
+        break;
+      } else {
+      displayNumber = buildNumber("." + '0');
+      updateDisplay(displayNumber);
+      break;
+      }
+    case 'clear':
+      displayNumber = '';
+      oldNumber = undefined;
+      updateDisplay(displayNumber);
+      break;
+    default:
+      displayNumber = buildNumber(buttonValue);
+      updateDisplay(displayNumber);
+  }
+
+  if (buttonValue === "=") {
+    switch (lastOperator) {
+      case "+":
+        displayNumber = add(oldNumber, displayNumber);
+        oldNumber = displayNumber;
+        updateDisplay(displayNumber);
+        displayNumber = '';
+        break;
+      default:
+        break;
+    }
+    lastOperator ='';
+  }
+
+  if (isNumber(buttonValue) != true) {
+    lastOperator = buttonValue;
+  }
+
+
+
+  // updateDisplay(displayNumber);
+
+  console.log("displayNumber: " + displayNumber);
+  console.log("oldNumber: " + oldNumber);
+  console.log("buttonValue: " + buttonValue);
+  console.log("lastOperator: " + lastOperator);
 
     // TODO: WRITE SOME OF YOUR CODE HERE
 
