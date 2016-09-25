@@ -6,9 +6,9 @@ var operator;
 var buttonPresses = 0;
 //
 console.log("**BUTTON PRESS**: " + buttonPresses);
-console.log("displayNumber: " + displayNumber);
-console.log("oldNumber: " + oldNumber);
-console.log("lastOperator: " + operator);
+// console.log("displayNumber: " + displayNumber);
+// console.log("oldNumber: " + oldNumber);
+// console.log("lastOperator: " + operator);
 
 
 // TODO: DEFINE YOUR FUNCTIONS HERE
@@ -134,9 +134,9 @@ function handleButtonClick(buttonValue) {
     buttonPresses++;
 
     console.log("**BUTTON PRESS**: #" + buttonPresses + " \'" + buttonValue + "\'");
-    console.log("displayNumber: " + displayNumber);
-    console.log("oldNumber: " + oldNumber);
-    console.log("operator: " + operator);
+    // console.log("displayNumber: " + displayNumber);
+    // console.log("oldNumber: " + oldNumber);
+    // console.log("operator: " + operator);
 }
 
 
