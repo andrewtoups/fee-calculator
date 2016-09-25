@@ -1,54 +1,73 @@
-// Samantha Typing
-// Andrew Driving
-
-// Issue with flow of control with operation buttons and when to update displayNumber vs. when to store it. Reset and store every time operation button is pressed.
 
 // TODO: DEFINE ANY VARIABLES HERE
 var displayNumber = '';
 var oldNumber;
-var lastOperator;
-
+var operator;
+var buttonPresses = 0;
+//
+console.log("**BUTTON PRESS**: " + buttonPresses);
 console.log("displayNumber: " + displayNumber);
 console.log("oldNumber: " + oldNumber);
+console.log("lastOperator: " + operator);
 
 
 // TODO: DEFINE YOUR FUNCTIONS HERE
-function buildNumber(value) {
-  displayNumber += value;
-  displayNumber = parseFloat(displayNumber);
-  return displayNumber;
+function buildNumber(value, newValue) {
+  value += newValue;
+  return value;
 }
-
-function isNumber(n) {
-  return !isNaN(parseFloat(n)) && isFinite(n);
+// Tests if number is already decimal for '.' case
+function isInt(value) {
+  return Number(value) % 1 === 0;
 }
 
 // Addition
 function add(num1, num2) {
-  var sum = num1 + num2
+  var sum = num1 + num2;
   return sum;
-  console.log("sum = " + sum);
 }
-//Subtraction
+// Subtraction
 function subtract (num1, num2) {
-  var difference = num1 - num2
+  var difference = num1 - num2;
   return difference;
-  console.log("difference = " + difference);
 }
 // Division
 function divide (num1, num2) {
-  var quotient = num1 - num2
+  var quotient;
+  if (num2 === 0) {
+    quotient = 0;
+  } else{
+    quotient = num1 / num2;
+  }
   return quotient;
-  console.log("quotient = " + quotient);
 }
-
 // Multiplication
 function multiply (num1, num2) {
-  var product = num1 - num2
+  var product = num1 * num2;
   return product;
-  console.log("product = " + product);
 }
-//
+// Does our math
+function compute (num1, num2, operator) {
+  num1 = Number(num1);
+  num2 = Number(num2);
+  switch (operator) {
+    case '+':
+      return add(num1, num2);
+      break;
+    case '-':
+      return subtract(num1, num2);
+      break;
+    case 'x':
+      return multiply(num1, num2);
+      break;
+    case '/':
+      return divide(num1, num2);
+      break;
+    default:
+      break;
+  }
+}
+
 
 /**
  * 		EDIT ME!
@@ -59,80 +78,65 @@ function multiply (num1, num2) {
  * @param  {String} buttonValue   The value of the button that was clicked on, for example "6" or "+"
  */
 function handleButtonClick(buttonValue) {
-  switch (buttonValue) {
-    case '+':
-      if (oldNumber == undefined) {
-        oldNumber = displayNumber;
-        updateDisplay(displayNumber);
-        displayNumber = '';
-        break;
-      }
-      else {
-        displayNumber = add(oldNumber, displayNumber);
-        oldNumber = displayNumber;
-        updateDisplay(displayNumber);
-        displayNumber = '';
-        break;
-      }
-      break;
-
-    case '-':
-
-      break;
-    case '/':
-
-      break;
-    case 'x':
-
-      break;
-
-    case '.':
-      if (displayNumber.includes(".")) {
-        break;
-      } else {
-      displayNumber = buildNumber("." + '0');
-      updateDisplay(displayNumber);
-      break;
-      }
-    case 'clear':
-      displayNumber = '';
-      oldNumber = undefined;
-      updateDisplay(displayNumber);
-      break;
-    default:
-      displayNumber = buildNumber(buttonValue);
-      updateDisplay(displayNumber);
-  }
-
-  if (buttonValue === "=") {
-    switch (lastOperator) {
-      case "+":
-        displayNumber = add(oldNumber, displayNumber);
-        oldNumber = displayNumber;
-        updateDisplay(displayNumber);
-        displayNumber = '';
-        break;
-      default:
-        break;
-    }
-    lastOperator ='';
-  }
-
-  if (isNumber(buttonValue) != true) {
-    lastOperator = buttonValue;
-  }
-
-
-
-  // updateDisplay(displayNumber);
-
-  console.log("displayNumber: " + displayNumber);
-  console.log("oldNumber: " + oldNumber);
-  console.log("buttonValue: " + buttonValue);
-  console.log("lastOperator: " + lastOperator);
 
     // TODO: WRITE SOME OF YOUR CODE HERE
 
+    if(!isNaN(buttonValue)){ // number key
+      if (operator === undefined ||
+        (operator != undefined && oldNumber != undefined)) { // nothing's happened, or waiting for next num
+          displayNumber = buildNumber(displayNumber, buttonValue); //create new number
+          updateDisplay(displayNumber); // display new number
+      }
+    } else if (buttonValue === '.') { // decimal key
+      if (isInt(displayNumber)){ // if not already a decimal
+        if (operator === undefined ||
+          (operator != undefined && oldNumber != undefined)) { // nothing's happened, or waiting for next num
+
+          displayNumber = buildNumber(displayNumber, buttonValue); //create new decimal
+          updateDisplay(displayNumber); // display new decimal
+        }
+      }
+    } else if (buttonValue === 'clear'){ // clear key
+      displayNumber = '';  // reset all stored data
+      oldNumber = undefined;
+      operator = undefined;
+      updateDisplay(displayNumber); // clear display
+    } else if (buttonValue === '='){ // equal key
+        if (operator != undefined && oldNumber != undefined && displayNumber !='') { //an operator is stored with two operands
+          displayNumber = compute(oldNumber, displayNumber, operator); //calculate!
+          updateDisplay(displayNumber); //display result
+          console.log("!!!!!!");
+          console.log("result: " + displayNumber);
+          console.log("!!!!!!");
+          oldNumber = displayNumber; //store as old number, don't change display
+          displayNumber = ''; //prime displayNumber for next value
+          // operator = undefined; //discard operator for next operation
+        }
+    }
+    else { // operator is pressed
+      if (oldNumber != undefined && displayNumber !='' && operator != undefined) { // only if there are two stored operands AND an operator
+        displayNumber = compute(oldNumber, displayNumber, operator); //calculate!
+        updateDisplay(displayNumber); //display result
+        console.log("!!!!!!");
+        console.log("result: " + displayNumber);
+        console.log("!!!!!!");
+        oldNumber = displayNumber; //store as old number, don't change display
+        displayNumber = ''; //prime displayNumber for next value
+        operator = buttonValue; //discard operator for next operation
+      } else if (oldNumber === undefined && !isNaN(displayNumber)){  // no stored operand but number is displayed
+        oldNumber = displayNumber; //store as old number, don't change display
+        displayNumber = ''; //prime displayNumber for next value
+        operator = buttonValue; // store operator
+      } else if (operator != undefined && oldNumber != undefined){ //state after equals is pressed, just need to store operator for next calc
+        operator = buttonValue;
+      }
+    }
+    buttonPresses++;
+
+    console.log("**BUTTON PRESS**: #" + buttonPresses + " \'" + buttonValue + "\'");
+    console.log("displayNumber: " + displayNumber);
+    console.log("oldNumber: " + oldNumber);
+    console.log("operator: " + operator);
 }
 
 
